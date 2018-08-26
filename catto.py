@@ -3,16 +3,38 @@ import json
 import random
 import requests
 from errbot import BotPlugin, botcmd
+from itertools import chain
+
+CONFIG_TEMPLATE = {'CATAPI_KEY': '9880edd3-3c4f-4758-aebe-c7182aeb3a70'}
 
 class Catto(BotPlugin):
     """Fetch random cat images URLs"""
     min_err_version = '3.0.0' # Optional, but recommended
 
+    def get_configuration_template(self):
+        return CONFIG_TEMPLATE
+
+    def configure(self, configuration):
+        if configuration is not None and configuration != {}:
+            config = dict(chain(CONFIG_TEMPLATE.items(),
+                                configuration.items()))
+        else:
+            config = CONFIG_TEMPLATE
+        super(Catto, self).configure(config)
+
+    # def activate(self):
+    #     """Activates plugin, loading default configuration"""
+    #     super(Catto, self).activate()
+    #     if self.config
+    #     self.configure(CONFIG_TEMPLATE)
+    #     super().activate()
+    #     super(Catto, self).activate()
+    #     self.configure(CONFIG_TEMPLATE)
+
     def get_catapi_pic(self, type):
         api_url = 'https://api.thecatapi.com/v1/images/search'
-        api_key = '9880edd3-3c4f-4758-aebe-c7182aeb3a70'
         querystring = {"size":"full","mime_types":type,"format":"json","order":"RANDOM","limit":"1"}
-        headers = {'Content-Type': "application/json",'x-api-key': api_key}
+        headers = {'Content-Type': "application/json",'x-api-key': self.config['CATAPI_KEY']}
 
         try:
             response = requests.request("GET", api_url, headers=headers, params=querystring)
