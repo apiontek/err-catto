@@ -1,0 +1,9 @@
+[Core]
+name = Catto
+module = catto
+
+[Documentation]
+description = Retrieve random cat pictures
+
+[Python]
+version = 3
