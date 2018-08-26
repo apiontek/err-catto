@@ -22,15 +22,6 @@ class Catto(BotPlugin):
             config = CONFIG_TEMPLATE
         super(Catto, self).configure(config)
 
-    # def activate(self):
-    #     """Activates plugin, loading default configuration"""
-    #     super(Catto, self).activate()
-    #     if self.config
-    #     self.configure(CONFIG_TEMPLATE)
-    #     super().activate()
-    #     super(Catto, self).activate()
-    #     self.configure(CONFIG_TEMPLATE)
-
     def get_catapi_pic(self, type):
         api_url = 'https://api.thecatapi.com/v1/images/search'
         querystring = {"size":"full","mime_types":type,"format":"json","order":"RANDOM","limit":"1"}
