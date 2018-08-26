@@ -1,14 +1,12 @@
-#import re
+import logging
 import json
 import random
-import logging
 import requests
-from errbot import BotPlugin, botcmd, re_botcmd
+from errbot import BotPlugin, botcmd
 
 class Catto(BotPlugin):
-    """Plugin for random cat images!"""
+    """Fetch random cat images URLs"""
     min_err_version = '3.0.0' # Optional, but recommended
-
 
     def get_catapi_pic(self, type):
         api_url = 'https://api.thecatapi.com/v1/images/search'
@@ -38,64 +36,21 @@ class Catto(BotPlugin):
         return json.loads(response.text)['file']
 
     def get_catpic(self):
-        flip = random.randint(0, 1)
-        if flip == 0:
+        choice = random.randint(0, 2)
+        if choice < 2:
             return self.get_catapi_pic("jpg,png,gif")
         return self.get_randomcat_pic()
 
-    @botcmd()
+    @botcmd(split_args_with=' ')
     def catto(self, msg, args):
-        """Retrieve a random cat image, which may be animated (gif) or still (jpg/png)"""
-        if "gif" in args:
-            return self.catto_gif(msg, args)
-        elif "still" in args:
-            return self.catto_still(msg, args)
-        return self.get_catpic()
-
-    @botcmd()
-    def catto_gif(self, msg, args):
-        """Retrieve a random cat animated gif"""
-        return self.get_catapi_pic("gif")
-    
-    @botcmd()
-    def catto_still(self, msg, args):
-        """Retrieve a random cat still picture (not animated)"""
-        return self.get_catapi_pic("jpg,png")
-
-
-    # @botcmd
-    # def catto_gif(self, msg, args):
-    #     """Retrieve a random cat image"""
-    #     return self.get_catpic("gif")
-
-    # """Example 'Hello, world!' plugin, modified by APiontek"""
-
-    # @botcmd
-    # def hello(self, msg, args):
-    #     """Say hello to the world"""
-    #     return "Fart on this, fucker!!"
-
-    # @re_botcmd(pattern=r"^(([Cc]an|[Mm]ay) I have a )?cookie please\?$")
-    # def hand_out_cookies(self, msg, match):
-    #     """
-    #     Gives cookies to people who ask me nicely.
-
-    #     This command works especially nice if you have the following in
-    #     your `config.py`:
-
-    #     BOT_ALT_PREFIXES = ('Err',)
-    #     BOT_ALT_PREFIX_SEPARATORS = (':', ',', ';')
-
-    #     People are then able to say one of the following:
-
-    #     Err, can I have a cookie please?
-    #     Err: May I have a cookie please?
-    #     Err; cookie please?
-    #     """
-    #     yield "Here's a cookie for you, {}".format(msg.frm)
-    #     yield "/me hands out a cookie."
-
-    # @re_botcmd(pattern=r"(^| )cookies?( |$)", prefixed=False, flags=re.IGNORECASE)
-    # def listen_for_talk_of_cookies(self, msg, match):
-    #     """Talk of cookies gives Errbot a craving..."""
-    #     return "Somebody mentioned cookies? Om nom nom!"
+        """Fetch a random cat image, which may be animated (gif) or still (jpg/png)"""
+        if len(args) > 0 and args[0]:
+            type = args[0]
+            if type == 'gif':
+                return self.get_catapi_pic("gif")
+            elif type == 'still':
+                return self.get_catapi_pic("jpg,png")
+            else:
+                return 'Unrecognized image type. Please use "gif" or "still" or leave blank to get either type.'
+        else:
+            return self.get_catpic()
