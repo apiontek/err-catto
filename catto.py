@@ -43,14 +43,18 @@ class Catto(BotPlugin):
 
     @botcmd(split_args_with=' ')
     def catto(self, msg, args):
-        """Fetch a random cat image, which may be animated (gif) or still (jpg/png)"""
+        """Fetch a random cat image, optionally specifying 'gif' (animated), 'still' (jpg or png), or 'jpg' or 'png'"""
         if len(args) > 0 and args[0]:
             type = args[0]
             if type == 'gif':
                 return self.get_catapi_pic("gif")
             elif type == 'still':
                 return self.get_catapi_pic("jpg,png")
+            elif type == 'jpg':
+                return self.get_catapi_pic(type)
+            elif type == 'png':
+                return self.get_catapi_pic(type)
             else:
-                return 'Unrecognized image type. Please use "gif" or "still" or leave blank to get either type.'
+                return 'Unrecognized image type. Please use "gif", "still", "jpg", "png", or leave blank to get any type.'
         else:
             return self.get_catpic()
